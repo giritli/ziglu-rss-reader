@@ -9,7 +9,7 @@ using `docker-compose`.
 ### API Server
 Web server will be available on `localhost:8080`
 ```
-docker-compose up runner -d
+docker-compose up reader -d
 ```
 
 ### Run tests
