@@ -1,0 +1,24 @@
+version: "3"
+services:
+  reader:
+    image: golang:latest
+    volumes:
+    - .:/go/src/reader
+    working_dir: /go/src/reader
+    command: go run cmd/reader/reader.go -file=feeds.json
+    ports:
+      - "8080:8080"
+  tests:
+    image: golang:latest
+    volumes:
+      - .:/go/src/reader
+    working_dir: /go/src/reader
+    command: go test -v ./...
+  docs:
+    image: swaggerapi/swagger-ui
+    volumes:
+      - ./api.yaml:/docs/api.yaml
+    ports:
+      - "8081:8080"
+    environment:
+      - SWAGGER_JSON=/docs/api.yaml

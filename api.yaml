@@ -1,0 +1,141 @@
+openapi: "3.0.0"
+info:
+  description: "API which exposes consumed RSS feeds and articles."
+  version: "1.0.0"
+  title: "Ziglu RSS API"
+  contact:
+    email: "ocgiritli@gmail.com"
+paths:
+  "/feeds":
+    get:
+      summary: "Get available feeds"
+      responses:
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        200:
+          $ref: '#/components/responses/FeedsResponse'
+  "/latest":
+    get:
+      summary: "Get latest articles"
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: string
+            format: date
+            example: '2020-01-01T10:11:12'
+      responses:
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        200:
+          $ref: '#/components/responses/ArticlesResponse'
+  "/latest/{uuid}":
+    get:
+      summary: "Get latest articles from specific feed"
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: string
+            format: date
+            example: '2020-01-01T10:11:12'
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        200:
+          $ref: '#/components/responses/ArticlesResponse'
+  "/article/{uuid}":
+    get:
+      summary: "Get specific article"
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        200:
+          $ref: '#/components/responses/ArticleResponse'
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        Message:
+          type: string
+    Feed:
+      type: object
+      properties:
+        UUID:
+          type: string
+          format: uuid
+        FeedLink:
+          type: string
+          format: url
+        ModifiedAt:
+          type: string
+          format: date
+        Title:
+          type: string
+        Link:
+          type: string
+          format: url
+    Article:
+      type: object
+      properties:
+        Link:
+          type: string
+          format: url
+        Published:
+          type: string
+          format: date
+        Title:
+          type: string
+        Description:
+          type: string
+        Image:
+          type: object
+          properties:
+            Title:
+              type: string
+            URL:
+              type: string
+        UUID:
+          type: string
+          format: uuid
+  responses:
+    ErrorResponse:
+      description: An error occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    FeedsResponse:
+      description: List of available feeds
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/Feed'
+    ArticlesResponse:
+      description: List of articles
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/Article'
+    ArticleResponse:
+      description: Individual article
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Article'
